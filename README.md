@@ -3,9 +3,30 @@ configuration of geth, parity, ipfs and nginx to work in a productin environment
 
 ## Etherium-go (geth)
 
-To launch geth 
+To launch geth as a service with autorestart
+
+In */etc/systemd/system* create a file named **gethRopsten.service** with: 
 ```sh
-nohup geth --testnet --rpcport=8548 --datadir "/home/username/ethereum" --fast --port=30306 --rpc --rpccorsdomain "*" --rpcaddr "0.0.0.0" > /dev/null 2>/home/username/gethLog &
+[Unit]
+Description=Geth on ropsten
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/geth --testnet --rpcport=8548 --datadir "/home/yourUsername/ethereum" --fast --port=30306 --rpc --rpccorsdomain "*" --rpcaddr "0.0.0.0" > /dev/null 2>/home/yourUsername/gethLog
+Restart=always
+
+
+[Install]
+WantedBy=multi-user.target
+```
+Enable the service 
+```sh
+sudo systemctl enable gethropsten
+```
+
+Start the service
+```sh
+sudo systemctl start gethropsten
 ```
 
 ## Parity
@@ -34,7 +55,7 @@ location /BDcHsW5a6RvCHQUJyGFgEAYVGBFP8Hy9v55MP72g/ {
 
 create a certificate
 ```sh
-$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 ```
 
 Edit the virtual host *etc/nginx/sites-enabled/default* and add the line 
