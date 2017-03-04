@@ -45,7 +45,7 @@ Edit the virtual host `etc/nginx/sites-enabled/default` and in the end of the se
 ```sh
 #geth on test-net
 location /BDcHsW5a6RvCHQUJyGFgEAYVGBFP8Hy9v55MP72g/ {
-	proxy_pass https://YourWebSite:8548;
+	proxy_pass https://localhost:8548;
 	proxy_set_header X-Forwarded-Host $server_name;
 	proxy_set_header X-Real-IP $remote_addr;
 }
@@ -87,19 +87,19 @@ server {
 
 #geth on test-net proxy
         location /maDarg9nTJK9VgbGC56kRr440Wu6nglaR7NBYUDk/ {
-                proxy_pass http://ServerIP:8545;
+                proxy_pass http://localhost:8545;
                 proxy_set_header X-Forwarded-Host $server_name;
                 proxy_set_header X-Real-IP $remote_addr;
                 }
 #geth on ropsten proxy  
         location /BDcHsW5a6RvCHQUJyGFgEAYVGBFP8Hy9v55MP72g/ {
-                proxy_pass http://ServerIP:8548;
+                proxy_pass http://localhost:8548;
                 proxy_set_header X-Forwarded-Host $server_name;
                 proxy_set_header X-Real-IP $remote_addr;
                 }
 #parity Proxy           
         location /u6bC4509vE6IPTNZAzo0VlyrHgaIhvMfX4sNpw3Z/ {
-                proxy_pass http://ServerIP:8551;
+                proxy_pass http://localhost:8551;
                 proxy_set_header X-Forwarded-Host $server_name;
                 proxy_set_header X-Real-IP $remote_addr;
                 }
@@ -115,7 +115,8 @@ sudo ufw allow 443
 ## IPFS
 the easiest way to deal with IPFS  is to create a service.
 
-first of all launch the command `sudo runuser -l  root -c 'ipfs init'` to create the nessesary files.
+* create a user for IPF `sudo useradd -m ipfs-user`
+* launch the command `sudo runuser -l  ipfs-user -c 'ipfs init'` to create the nessesary files.
 
 in `/etc/systemd/system` create a file named **ipfs.service** and add the lines:
 ```
@@ -128,7 +129,7 @@ Description=IPFS daemon
 Type=simple
 ExecStart=/usr/local/bin/ipfs daemon
 Restart=on-failure
-User=root
+User=ipfs-user
 
 [Install]
 WantedBy=multi-user.target
